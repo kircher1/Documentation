@@ -47,7 +47,7 @@ The atmosphere requires WebGPU or WebGL2. Call `Atmosphere.IsSupported(engine)` 
 
 For rendering objects within the atmosphere, it is recommended to use [physically based materials (PBR)](/features/featuresDeepDive/materials/using/introToPBR).
 
-<Playground id="#K1Y1Q8#75" title="PBR Integration" description="A PBR sphere rendered within the atmosphere." />
+<Playground id="#K1Y1Q8#94" title="PBR Integration" description="A PBR sphere rendered within the atmosphere." />
 
 <br/>
 <br/>
