@@ -17,7 +17,7 @@ video-content:
 
 ## Introduction
 
-When a scene has alot of lights, the per-pixel lighting calculations can get quite slow. This is because every single pixel needs to compute the lighting contribution from every single light, even if those lights might not really be affecting that pixel at all. One of the ways these lighting calculations could be dramatically sped up is if the engine had a rough idea of what lights affect the current pixel. This is the basis behind clustered lighting, also referred to as Forward+.
+When a scene has a lot of lights, the per-pixel lighting calculations can get quite slow. This is because every single pixel needs to compute the lighting contribution from every single light, even if those lights might not really be affecting that pixel at all. One of the ways these lighting calculations could be dramatically sped up is if the engine had a rough idea of what lights affect the current pixel. This is the basis behind clustered lighting, also referred to as Forward+.
 
 In Babylon, clustered lighting is implemented as its own light type, in which other point or spot lights can be added to:
 ```javascript
@@ -36,7 +36,12 @@ Babylon takes a slightly different apprach to clustered lighting, which is mainl
 
 This solution works on both WebGPU and WebGL 2 (if float color buffers are supported and blendable).
 
-<Playground id="#CSCJO2#16" title="Sponza scene with 1000 lights" description="Example showing off the capabilities of clustered lighting by making the Sponza scene colorful" />
+<Playground id="#CSCJO2#89" image="/img/playgroundsAndNMEs/pg-CSCJO2-75.png" title="Sponza scene with 1000 lights" description="Example showing off the capabilities of clustered lighting by making the Sponza scene colorful" />
+<Playground id="#6JYGXW#3" image="/img/playgroundsAndNMEs/pg-6JYGXW-1.png" title="ClusteredLights corridor" description="A corridor lit by hundreds of colored point and spot lights" />
+
+**Important**:
+* For best performance, when creating a light intended for use in a clustered light container, do not add it to the scene! To do this, pass the value *true* for the **dontAddToScene** parameter of the light constructor.
+* This can make a huge difference when you create all the lights in advance and pass them all at once to the clustered light container constructor (compared to creating the lights one by one and calling `ClusteredLightContainer.addLight()` for each one)!
 
 ## Tiled Clustering
 
@@ -91,7 +96,7 @@ Our solution to this problem, partly inspired by [this GitHub project](https://g
 
 ## Depth Clustering
 
-The depth clustering is alot more simple and can easily be done on the CPU since we're only dealing with a single dimension (depth) instead of two (screen X and Y). The depth range of the camera (from `minZ` to `maxZ`) is split into 16 slices by default, with each slice containing the minimum and maximum light index that intersects that slice. This provides a range of bitmasks (from the tiled clustering step) the fragment shader needs to check. For these minimum and maximum indices to efficiently represent the lights within the slice, the lights are sorted based on distance from the camera. Sorting is fast enough to be done each frame.
+The depth clustering is a lot more simple and can easily be done on the CPU since we're only dealing with a single dimension (depth) instead of two (screen X and Y). The depth range of the camera (from `minZ` to `maxZ`) is split into 16 slices by default, with each slice containing the minimum and maximum light index that intersects that slice. This provides a range of bitmasks (from the tiled clustering step) the fragment shader needs to check. For these minimum and maximum indices to efficiently represent the lights within the slice, the lights are sorted based on distance from the camera. Sorting is fast enough to be done each frame.
 
 ![The Sponza scene with the screen covered in randomly-colored slices getting further and further away from the camera](/img/features/clusteredLighting/slices16.png)
 <font size="2">The Sponza scene with the default depth slicing options. Each slice is tinted a different color.</font>
